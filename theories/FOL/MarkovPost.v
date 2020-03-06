@@ -132,5 +132,16 @@ Proof.
   - intros ? ? ? ? ?. eapply weakPost; eauto.
     eapply MP_Post; eauto.
 Qed.
-
   
+Definition mu_enum X (p : X -> Prop) f :
+  (forall x : X, p x <-> (exists n : nat, f n = Some x)) -> ex p -> sig p.
+Proof.
+  intros Hf H.
+  assert (exists n x, f n = Some x).
+  destruct H; rewrite Hf in H; firstorder.
+  eapply mu in H0 as (? & ?).
+  - destruct (f x) eqn:E2. exists x0. destruct e. inv H0. eapply Hf. eauto.
+    exfalso. destruct e. inv H0.
+  - intros. destruct (f x). left. eauto.
+    right. intros []. inv H1.
+Defined. 
